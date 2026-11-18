@@ -1,40 +1,73 @@
-using Dot.Net.WebApi.Domain;
+using Dot.Net.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using P7CreateRestApi.Models;
 
 namespace Dot.Net.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("bidlists")]
     public class BidListController : ControllerBase
     {
-        [HttpGet]
-        [Route("validate")]
-        public IActionResult Validate([FromBody] BidList bidList)
+        private readonly IBidListService _bidListService;
+
+        public BidListController(IBidListService bidListService)
         {
-            // TODO: check data valid and save to db, after saving return bid list
-            return Ok();
+            _bidListService = bidListService;
         }
 
         [HttpGet]
-        [Route("update/{id}")]
-        public IActionResult ShowUpdateForm(int id)
+        public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            return Ok(await _bidListService.GetAllAsync());
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            BidListDto? bidList = await _bidListService.GetByIdAsync(id);
+
+            if (bidList == null)
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(bidList);
+        }
+
+        // [ApiController] checks the DTO first: an invalid body never reaches this method (400 with the messages).
         [HttpPost]
-        [Route("update/{id}")]
-        public IActionResult UpdateBid(int id, [FromBody] BidList bidList)
+        public async Task<IActionResult> Create([FromBody] BidListDto bidList)
         {
-            // TODO: check required fields, if valid call service to update Bid and return list Bid
-            return Ok();
+            await _bidListService.CreateAsync(bidList, User?.Identity?.Name);
+
+            return Ok(await _bidListService.GetAllAsync());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult DeleteBid(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] BidListDto bidList)
         {
-            return Ok();
+            if (!await _bidListService.UpdateAsync(id, bidList, User?.Identity?.Name))
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(await _bidListService.GetAllAsync());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!await _bidListService.DeleteAsync(id))
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(await _bidListService.GetAllAsync());
+        }
+
+        private static string NotFoundMessage(int id)
+        {
+            return $"Aucune offre avec l'identifiant {id}.";
         }
     }
 }

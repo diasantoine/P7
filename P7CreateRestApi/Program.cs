@@ -2,6 +2,7 @@ using Dot.Net.WebApi.Data;
 using Dot.Net.WebApi.Middleware;
 using Dot.Net.WebApi.Repositories;
 using Dot.Net.WebApi.Security;
+using Dot.Net.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,8 @@ builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped(typeof(IDataRepository<>), typeof(DataRepository<>));
+builder.Services.AddScoped<IBidListService, BidListService>();
 
 builder.Services.AddSecurity(builder.Configuration);
 
