@@ -10,12 +10,14 @@ namespace Dot.Net.WebApi.Data
         public LocalDbContext(DbContextOptions<LocalDbContext> options) : base(options) { }
 
         public DbSet<BidList> BidLists => Set<BidList>();
+        public DbSet<CurvePoint> CurvePoints => Set<CurvePoint>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<BidList>().ToTable("BidList");
+            builder.Entity<CurvePoint>().ToTable("CurvePoint");
         }
     }
 }

@@ -100,6 +100,34 @@ namespace P7CreateRestApi.Migrations
                     b.ToTable("BidList", (string)null);
                 });
 
+            modelBuilder.Entity("Dot.Net.WebApi.Domain.CurvePoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("AsOfDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte?>("CurveId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<double?>("CurvePointValue")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Term")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CurvePoint", (string)null);
+                });
+
             modelBuilder.Entity("Dot.Net.WebApi.Domain.User", b =>
                 {
                     b.Property<int>("Id")

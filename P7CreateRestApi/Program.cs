@@ -21,6 +21,7 @@ builder.Services.AddDbContext<LocalDbContext>(options =>
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped(typeof(IDataRepository<>), typeof(DataRepository<>));
 builder.Services.AddScoped<IBidListService, BidListService>();
+builder.Services.AddScoped<ICurvePointService, CurvePointService>();
 
 builder.Services.AddSecurity(builder.Configuration);
 
