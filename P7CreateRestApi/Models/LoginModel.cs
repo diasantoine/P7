@@ -1,7 +1,13 @@
-﻿namespace P7CreateRestApi.Models
+using System.ComponentModel.DataAnnotations;
+
+namespace P7CreateRestApi.Models
 {
     public class LoginModel
     {
-        // TODO: implement properties needeed for login model.
+        [Required(ErrorMessage = "Le nom d'utilisateur est obligatoire.")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Le mot de passe est obligatoire.")]
+        public string Password { get; set; } = string.Empty;
     }
 }
