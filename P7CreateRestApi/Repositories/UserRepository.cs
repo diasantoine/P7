@@ -13,7 +13,7 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public User FindByUserName(string userName)
+        public User? FindByUserName(string userName)
         {
             return DbContext.Users.Where(user => user.UserName == userName)
                                   .FirstOrDefault();
@@ -28,7 +28,7 @@ namespace Dot.Net.WebApi.Repositories
         {
         }
 
-        public User FindById(int id)
+        public User? FindById(int id)
         {
             return null;
         }

@@ -47,10 +47,10 @@ namespace Dot.Net.WebApi.Controllers
         [Route("update/{id}")]
         public IActionResult ShowUpdateForm(int id)
         {
-            User user = _userRepository.FindById(id);
-            
+            User? user = _userRepository.FindById(id);
+
             if (user == null)
-                throw new ArgumentException("Invalid user Id:" + id);
+                return NotFound($"Invalid user Id: {id}");
 
             return Ok();
         }
@@ -67,10 +67,10 @@ namespace Dot.Net.WebApi.Controllers
         [Route("{id}")]
         public IActionResult DeleteUser(int id)
         {
-            User user = _userRepository.FindById(id);
-            
+            User? user = _userRepository.FindById(id);
+
             if (user == null)
-                throw new ArgumentException("Invalid user Id:" + id);
+                return NotFound($"Invalid user Id: {id}");
 
             return Ok();
         }
