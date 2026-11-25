@@ -27,6 +27,7 @@ namespace Dot.Net.WebApi.Security
             // AddIdentityCore (not AddIdentity): no cookie scheme, so a missing token gives 401 instead of a redirect.
             services.AddIdentityCore<User>(options => ConfigurePasswordPolicy(options.Password))
                 .AddRoles<IdentityRole<int>>()
+                .AddErrorDescriber<FrenchIdentityErrorDescriber>()
                 .AddEntityFrameworkStores<LocalDbContext>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

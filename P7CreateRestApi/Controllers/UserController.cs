@@ -1,85 +1,117 @@
-using Dot.Net.WebApi.Domain;
-using Dot.Net.WebApi.Repositories;
+using Dot.Net.WebApi.Security;
+using Dot.Net.WebApi.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using P7CreateRestApi.Models;
 
 namespace Dot.Net.WebApi.Controllers
 {
+    // Managing the accounts is reserved to the administrators: any other user gets 403.
     [ApiController]
-    [Route("[controller]")]
+    [Route("users")]
+    [Authorize(Roles = Roles.Admin)]
     public class UserController : ControllerBase
     {
-        private UserRepository _userRepository;
+        public const string OwnAccountMessage = "Vous ne pouvez pas supprimer votre propre compte.";
 
-        public UserController(UserRepository userRepository)
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpGet]
-        [Route("list")]
-        public IActionResult Home()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            return Ok(await _userService.GetAllAsync());
         }
 
-        [HttpGet]
-        [Route("add")]
-        public IActionResult AddUser([FromBody]User user)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            return Ok();
-        }
+            UserDto? user = await _userService.GetByIdAsync(id);
 
-        [HttpGet]
-        [Route("validate")]
-        public IActionResult Validate([FromBody]User user)
-        {
-            if (!ModelState.IsValid)
+            if (user == null)
             {
-                return BadRequest();
+                return NotFound(NotFoundMessage(id));
             }
-           
-           _userRepository.Add(user);
 
-            return Ok();
+            return Ok(user);
         }
 
-        [HttpGet]
-        [Route("update/{id}")]
-        public IActionResult ShowUpdateForm(int id)
-        {
-            User? user = _userRepository.FindById(id);
-
-            if (user == null)
-                return NotFound($"Invalid user Id: {id}");
-
-            return Ok();
-        }
-
+        // [ApiController] checks the DTO first: an invalid body never reaches this method (400 with the messages).
         [HttpPost]
-        [Route("update/{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] User user)
+        public async Task<IActionResult> Create([FromBody] UserInputDto user)
         {
-            // TODO: check required fields, if valid call service to update Trade and return Trade list
-            return Ok();
+            IdentityResult result = await _userService.CreateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(Messages(result));
+            }
+
+            return Ok(await _userService.GetAllAsync());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult DeleteUser(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UserInputDto user)
         {
-            User? user = _userRepository.FindById(id);
+            IdentityResult? result = await _userService.UpdateAsync(id, user);
+
+            if (result == null)
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(Messages(result));
+            }
+
+            return Ok(await _userService.GetAllAsync());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            UserDto? user = await _userService.GetByIdAsync(id);
 
             if (user == null)
-                return NotFound($"Invalid user Id: {id}");
+            {
+                return NotFound(NotFoundMessage(id));
+            }
 
-            return Ok();
+            // An administrator who deletes their own account could leave the application without any administrator.
+            if (string.Equals(user.Username, User?.Identity?.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(OwnAccountMessage);
+            }
+
+            IdentityResult? result = await _userService.DeleteAsync(id);
+
+            if (result == null)
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(Messages(result));
+            }
+
+            return Ok(await _userService.GetAllAsync());
         }
 
-        [HttpGet]
-        [Route("/secure/article-details")]
-        public async Task<ActionResult<List<User>>> GetAllUserArticles()
+        private static string NotFoundMessage(int id)
         {
-            return Ok();
+            return $"Aucun utilisateur avec l'identifiant {id}.";
+        }
+
+        private static IEnumerable<string> Messages(IdentityResult result)
+        {
+            return result.Errors.Select(error => error.Description);
         }
     }
 }
