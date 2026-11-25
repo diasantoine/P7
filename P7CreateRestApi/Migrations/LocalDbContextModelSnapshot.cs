@@ -188,6 +188,81 @@ namespace P7CreateRestApi.Migrations
                     b.ToTable("RuleName", (string)null);
                 });
 
+            modelBuilder.Entity("Dot.Net.WebApi.Domain.Trade", b =>
+                {
+                    b.Property<int>("TradeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TradeId"), 1L, 1);
+
+                    b.Property<string>("Account")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Benchmark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Book")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("BuyPrice")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("BuyQuantity")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreationName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DealName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DealType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RevisionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RevisionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("SellPrice")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("SellQuantity")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Side")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SourceListId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TradeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TradeSecurity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TradeStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Trader")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TradeId");
+
+                    b.ToTable("Trade", (string)null);
+                });
+
             modelBuilder.Entity("Dot.Net.WebApi.Domain.User", b =>
                 {
                     b.Property<int>("Id")

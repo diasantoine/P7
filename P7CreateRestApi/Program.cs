@@ -24,6 +24,7 @@ builder.Services.AddScoped<IBidListService, BidListService>();
 builder.Services.AddScoped<ICurvePointService, CurvePointService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<IRuleNameService, RuleNameService>();
+builder.Services.AddScoped<ITradeService, TradeService>();
 
 builder.Services.AddSecurity(builder.Configuration);
 

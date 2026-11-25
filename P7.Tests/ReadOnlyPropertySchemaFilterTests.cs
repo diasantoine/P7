@@ -13,6 +13,7 @@ namespace P7.Tests
         [InlineData(typeof(CurvePointDto), "id", "curveId")]
         [InlineData(typeof(RatingDto), "id", "moodysRating")]
         [InlineData(typeof(RuleNameDto), "id", "name")]
+        [InlineData(typeof(TradeDto), "tradeId", "account")]
         public void Apply_MarksOnlyTheIdAsReadOnly(Type dtoType, string idName, string otherName)
         {
             var schema = new OpenApiSchema
