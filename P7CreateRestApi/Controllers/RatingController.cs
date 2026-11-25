@@ -1,59 +1,73 @@
-using Dot.Net.WebApi.Controllers.Domain;
+using Dot.Net.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using P7CreateRestApi.Models;
 
 namespace Dot.Net.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("ratings")]
     public class RatingController : ControllerBase
     {
-        // TODO: Inject Rating service
+        private readonly IRatingService _ratingService;
 
-        [HttpGet]
-        [Route("list")]
-        public IActionResult Home()
+        public RatingController(IRatingService ratingService)
         {
-            // TODO: find all Rating, add to model
-            return Ok();
+            _ratingService = ratingService;
         }
 
         [HttpGet]
-        [Route("add")]
-        public IActionResult AddRatingForm([FromBody]Rating rating)
+        public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            return Ok(await _ratingService.GetAllAsync());
         }
 
-        [HttpGet]
-        [Route("validate")]
-        public IActionResult Validate([FromBody]Rating rating)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            // TODO: check data valid and save to db, after saving return Rating list
-            return Ok();
+            RatingDto? rating = await _ratingService.GetByIdAsync(id);
+
+            if (rating == null)
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(rating);
         }
 
-        [HttpGet]
-        [Route("update/{id}")]
-        public IActionResult ShowUpdateForm(int id)
-        {
-            // TODO: get Rating by Id and to model then show to the form
-            return Ok();
-        }
-
+        // [ApiController] checks the DTO first: an invalid body never reaches this method (400 with the messages).
         [HttpPost]
-        [Route("update/{id}")]
-        public IActionResult UpdateRating(int id, [FromBody] Rating rating)
+        public async Task<IActionResult> Create([FromBody] RatingDto rating)
         {
-            // TODO: check required fields, if valid call service to update Rating and return Rating list
-            return Ok();
+            await _ratingService.CreateAsync(rating);
+
+            return Ok(await _ratingService.GetAllAsync());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult DeleteRating(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] RatingDto rating)
         {
-            // TODO: Find Rating by Id and delete the Rating, return to Rating list
-            return Ok();
+            if (!await _ratingService.UpdateAsync(id, rating))
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(await _ratingService.GetAllAsync());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!await _ratingService.DeleteAsync(id))
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(await _ratingService.GetAllAsync());
+        }
+
+        private static string NotFoundMessage(int id)
+        {
+            return $"Aucune notation avec l'identifiant {id}.";
         }
     }
 }

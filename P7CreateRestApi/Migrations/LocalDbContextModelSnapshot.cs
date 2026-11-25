@@ -128,6 +128,34 @@ namespace P7CreateRestApi.Migrations
                     b.ToTable("CurvePoint", (string)null);
                 });
 
+            modelBuilder.Entity("Dot.Net.WebApi.Domain.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FitchRating")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MoodysRating")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte?>("OrderNumber")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("SandPRating")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rating", (string)null);
+                });
+
             modelBuilder.Entity("Dot.Net.WebApi.Domain.User", b =>
                 {
                     b.Property<int>("Id")

@@ -11,6 +11,7 @@ namespace Dot.Net.WebApi.Data
 
         public DbSet<BidList> BidLists => Set<BidList>();
         public DbSet<CurvePoint> CurvePoints => Set<CurvePoint>();
+        public DbSet<Rating> Ratings => Set<Rating>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -18,6 +19,7 @@ namespace Dot.Net.WebApi.Data
 
             builder.Entity<BidList>().ToTable("BidList");
             builder.Entity<CurvePoint>().ToTable("CurvePoint");
+            builder.Entity<Rating>().ToTable("Rating");
         }
     }
 }
