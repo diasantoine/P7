@@ -156,6 +156,38 @@ namespace P7CreateRestApi.Migrations
                     b.ToTable("Rating", (string)null);
                 });
 
+            modelBuilder.Entity("Dot.Net.WebApi.Domain.RuleName", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Json")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SqlPart")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SqlStr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Template")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RuleName", (string)null);
+                });
+
             modelBuilder.Entity("Dot.Net.WebApi.Domain.User", b =>
                 {
                     b.Property<int>("Id")

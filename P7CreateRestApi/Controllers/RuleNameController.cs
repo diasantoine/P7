@@ -1,58 +1,73 @@
+using Dot.Net.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using P7CreateRestApi.Models;
 
 namespace Dot.Net.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("rulenames")]
     public class RuleNameController : ControllerBase
     {
-        // TODO: Inject RuleName service
+        private readonly IRuleNameService _ruleNameService;
 
-        [HttpGet]
-        [Route("list")]
-        public IActionResult Home()
+        public RuleNameController(IRuleNameService ruleNameService)
         {
-            // TODO: find all RuleName, add to model
-            return Ok();
+            _ruleNameService = ruleNameService;
         }
 
         [HttpGet]
-        [Route("add")]
-        public IActionResult AddRuleName([FromBody]RuleName trade)
+        public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            return Ok(await _ruleNameService.GetAllAsync());
         }
 
-        [HttpGet]
-        [Route("validate")]
-        public IActionResult Validate([FromBody]RuleName trade)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            // TODO: check data valid and save to db, after saving return RuleName list
-            return Ok();
+            RuleNameDto? ruleName = await _ruleNameService.GetByIdAsync(id);
+
+            if (ruleName == null)
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(ruleName);
         }
 
-        [HttpGet]
-        [Route("update/{id}")]
-        public IActionResult ShowUpdateForm(int id)
-        {
-            // TODO: get RuleName by Id and to model then show to the form
-            return Ok();
-        }
-
+        // [ApiController] checks the DTO first: an invalid body never reaches this method (400 with the messages).
         [HttpPost]
-        [Route("update/{id}")]
-        public IActionResult UpdateRuleName(int id, [FromBody] RuleName rating)
+        public async Task<IActionResult> Create([FromBody] RuleNameDto ruleName)
         {
-            // TODO: check required fields, if valid call service to update RuleName and return RuleName list
-            return Ok();
+            await _ruleNameService.CreateAsync(ruleName);
+
+            return Ok(await _ruleNameService.GetAllAsync());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult DeleteRuleName(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] RuleNameDto ruleName)
         {
-            // TODO: Find RuleName by Id and delete the RuleName, return to Rule list
-            return Ok();
+            if (!await _ruleNameService.UpdateAsync(id, ruleName))
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(await _ruleNameService.GetAllAsync());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!await _ruleNameService.DeleteAsync(id))
+            {
+                return NotFound(NotFoundMessage(id));
+            }
+
+            return Ok(await _ruleNameService.GetAllAsync());
+        }
+
+        private static string NotFoundMessage(int id)
+        {
+            return $"Aucune règle avec l'identifiant {id}.";
         }
     }
 }
