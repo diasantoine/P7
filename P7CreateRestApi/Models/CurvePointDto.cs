@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace P7CreateRestApi.Models
@@ -5,6 +6,8 @@ namespace P7CreateRestApi.Models
     // Only the fields shown on the Findexium screens travel through the API.
     public class CurvePointDto
     {
+        // Chosen by the database: returned in the responses, ignored in the request bodies.
+        [ReadOnly(true)]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Ne doit pas être vide.")]

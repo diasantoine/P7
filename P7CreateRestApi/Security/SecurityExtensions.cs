@@ -1,5 +1,6 @@
 using Dot.Net.WebApi.Data;
 using Dot.Net.WebApi.Domain;
+using Dot.Net.WebApi.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -75,6 +76,9 @@ namespace Dot.Net.WebApi.Security
         {
             return services.AddSwaggerGen(options =>
             {
+                // The ids are chosen by the database: hide them from the request bodies.
+                options.SchemaFilter<ReadOnlyPropertySchemaFilter>();
+
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
